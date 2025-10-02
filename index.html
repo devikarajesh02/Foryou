@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>For You 💖</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', cursive;
+    }
+    body {
+      background: url('background.jpg') center center / cover no-repeat;
+    }
+
+    #puppy {
+      position: absolute;
+      bottom: 0;
+      left: -700px; 
+      width: 600px; 
+      height: auto;
+      transition: left 4s ease, opacity 1s ease; 
+      transform: translateX(-50%);
+    }
+    .wagging {
+      animation: wag 0.5s infinite alternate;
+      transform-origin: bottom center;
+    }
+    @keyframes wag {
+      0% { transform: translateX(-50%) rotate(-10deg); }
+      100% { transform: translateX(-50%) rotate(10deg); }
+    }
+
+    #acceptButton {
+      position: absolute;
+      bottom: 150px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 25px;
+      font-size: 18px;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      background: pink;
+      display: none;
+      transition: transform 0.2s;
+    }
+    #acceptButton:hover {
+      transform: scale(1.1);
+    }
+
+    #envelope {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px; 
+      height: auto;
+      display: none;
+      cursor: pointer;
+    }
+    /* Initial big bounce */
+    .bounce {
+      animation: bounce 1s ease;
+    }
+    @keyframes bounce {
+      0% { transform: translate(-50%, -50%) scale(0.5); }
+      50% { transform: translate(-50%, -50%) scale(1.2); }
+      70% { transform: translate(-50%, -50%) scale(0.9); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    /* Gentle infinite wiggle */
+    .wiggle {
+      animation: wiggle 1s ease-in-out infinite alternate;
+    }
+    @keyframes wiggle {
+      0% { transform: translate(-50%, -50%) rotate(-5deg); }
+      50% { transform: translate(-50%, -50%) rotate(5deg); }
+      100% { transform: translate(-50%, -50%) rotate(-5deg); }
+    }
+
+    #clickMsg {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 28px;
+      color: white;
+      text-shadow: 1px 1px 5px black;
+      display: none;
+    }
+
+    #letter {
+      position: absolute;
+      top: 20%;
+      left: 10%;
+      right: 10%;
+      bottom: 10%;
+      background: rgba(255,255,255,0.95);
+      padding: 30px;
+      font-size: 20px;
+      display: none;
+      overflow-y: auto;
+      border-radius: 15px;
+      box-shadow: 0px 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: 1000;
+      animation: fall 3s linear forwards;
+    }
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <img id="puppy" src="puppy.png" alt="puppy" />
+  <button id="acceptButton">Accept 💖</button>
+  <img id="envelope" src="envelope.png" alt="envelope" />
+  <div id="clickMsg">Click the envelope 💌</div>
+  <div id="letter">
+    <img id="letterImage" src="letter.jpg" style="max-width:100%; display:none;" />
+    <div id="letterText" style="display:none;"></div>
+  </div>
+
+  <script>
+    const pup = document.getElementById('puppy');
+    const acceptBtn = document.getElementById('acceptButton');
+    const env = document.getElementById('envelope');
+    const clickMsg = document.getElementById('clickMsg');
+    const bgMusic = document.getElementById('bgMusic');
+
+    window.onload = () => {
+      setTimeout(() => {
+        pup.style.left = '50%';
+        pup.style.opacity = 1;
+        pup.classList.add('wagging');
+      }, 500);
+
+      setTimeout(() => {
+        acceptBtn.style.display = 'block';
+      }, 4500); 
+    };
+
+    acceptBtn.addEventListener('click', () => {
+      acceptBtn.style.display = 'none';
+      pup.classList.remove('wagging');
+      bgMusic.play();
+
+      env.style.display = 'block';
+      env.classList.add('bounce'); 
+      setTimeout(() => {
+        env.classList.remove('bounce');
+        env.classList.add('wiggle'); // start gentle wiggle
+      }, 1000);
+
+      clickMsg.style.display = 'block';
+    });
+
+    env.addEventListener('click', () => {
+      clickMsg.style.display = 'none';
+      env.classList.remove('wiggle'); // stop wiggle when clicked
+      const letterDiv = document.getElementById('letter');
+      letterDiv.style.display = 'block';
+
+      const li = document.getElementById('letterImage');
+      li.style.display = 'block';
+
+      for(let i=0; i<50; i++){
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.background = `hsl(${Math.random()*360}, 100%, 70%)`;
+        c.style.left = Math.random()*100 + 'vw';
+        c.style.top = '-10px';
+        c.style.width = (5 + Math.random()*10) + 'px';
+        c.style.height = (5 + Math.random()*10) + 'px';
+        document.body.appendChild(c);
+        setTimeout(() => { c.remove(); }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>
